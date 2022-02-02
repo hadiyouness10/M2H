@@ -1,0 +1,247 @@
+<%- include("partials/header") -%>
+
+
+
+
+    <div class="container-fluid">
+        <div class="row py-3">
+            <div class="col-lg-4"></div>
+
+            <div class="col col-lg-4">
+                <div class="row">
+                    <div>
+                        <div class="progress bg-secondary mb-3">
+                            <div class="progress-bar bg-warning" style="width: 75%;"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row pb-5">
+                    <div class="col-3">
+                        Sign in
+                    </div>
+                    <div class="col-3">
+                        Shipping
+                    </div>
+                    <div class="col-3">
+                        Payment
+                    </div>
+                    <div class="col-3">
+                        Place order
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4"></div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row py-3">
+                    <div class="col">
+                        <%=console.log("This is user's address: "+req.user.address)%>
+                            <div class="card bg-light mb-3">
+                                <div class="card-header">
+                                    Address
+                                    <%=req.user.address.addrs%>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <%=req.user.address.city%>
+                                    </h5>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p class="card-text">
+                                                <%=req.user.address.tel%>
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <form action="changeLocation" method="POST">
+                                                <button class="btn float-end btn-outline-primary">Edit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card bg-light mb-3" style=";">
+                            <div class="card-header">Payment</div>
+                            <div class="card-body">
+                                <h5 class="card-title">Cash on Delivery</h5>
+                                <p class="card-text">Free delivery for orders above 100,000LL</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card bg-light mb-3" style=";">
+                            <div class="card-header">
+                                <p style="display: inline-block;">Your Orders</p>
+                                <p class="float-end" style="display: inline-block;">Prices</p>
+                            </div>
+                            <% var sum=0%>
+
+                                <div class="card-body justify-content-start">
+                                    <%console.log(typeof order.checkout)%>
+                                        <%if(order.checkout===false){%>
+
+                                            <%items.forEach(function(item){%>
+                                                <form method="post" action="/remove" />
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <img src=<%="../images/" +item.img%> style="display: inline-block; height: 5rem; width: 5rem;" alt="">
+
+                                                    </div>
+                                                    <div class="col-9">
+                                                        <div>
+                                                            <p style="display: inline-block;">
+                                                                <%=item.title%>
+                                                            </p>
+                                                            <p class="float-end" style="display: inline-block;">
+                                                                <%=item.price%>LL</p>
+                                                        </div>
+                                                        <p>Quantity: <span><%=item.qty%></span></p>
+                                                        <input type="hidden" name="item" value=<%=item.id%>>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6">
+
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <button class="btn btn-danger float-right" type="submit">Remove</button>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                </form>
+                                                <hr>
+                                                <%sum+=item.price*item.qty%>
+
+                                                    <%  })%>
+                                                        <%}else{%>
+                                                            <%sum=0%>
+                                                                <%}%>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="col-md-5">
+                <div class="row py-3">
+                    <div class="col">
+                        <div class="card bg-light mb-3">
+
+                            <form method="post" action="/checkout">
+                                <div class="card-header text-center ">
+                                    <input type="hidden" name="orderTotal" value=<%=sum%>>
+
+                                    <%if(order.checkout==true||items.length==0){%>
+                                        <button style="width: 65%;" class="btn btn-warning disabled" Onclick="return ConfirmOrder();" type="button" name="actiondelete" value="1">Place Order</button>
+                                        <%}else{%>
+
+                                            <button style="width: 65%;" class="btn btn-warning" Onclick="return ConfirmOrder();" type="submit" name="actiondelete" value="1">Place Order</button>
+                                            <%}%>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Order Summary</h5>
+                                    <%if(sum!=0){%>
+
+                                        <div class="row">
+                                            <div class="col-6">Items: </div>
+                                            <div class="col-6">
+                                                <%=sum%>LL</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">Delivery: </div>
+                                            <div class="col-6">Free</div>
+                                        </div>
+                                        <div class="row py-3">
+                                            <div class="col-6">
+                                                <h5 class="text-danger">Order Total: </h5>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <%=sum%>LL</div>
+                                        </div>
+                                        <%}else{%>
+
+                                            <div class="row">
+                                                <p class="lead px-4">You have no items in your card!</p>
+                                            </div>
+                                            <%}%>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <%console.log(orders)%>
+                    <%console.log(sum)%>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header">
+                                        <p style="display: inline-block;">Your Purchases</p>
+                                        <p class="float-end" style="display: inline-block;">Recieved</p>
+                                    </div>
+
+
+                                    <div class="card-body justify-content-start">
+                                        <%orders.forEach(function(order){%>
+
+                                            <%if(order.checkout==true){%>
+                                                <div class="row">
+                                                    <div>
+                                                        <p class="ms-2" style="display: inline-block;">
+                                                            Order Date:
+                                                            <%=order.date%>
+                                                        </p>
+                                                        <%if(order.recieved==true){%>
+                                                            <button class="float-end btn btn-success" style="display: inline-block;">Recieved </button>
+                                                            <%}else{%>
+                                                                <button class="float-end btn btn-danger" style="display: inline-block;">Pending </button>
+                                                                <%}%>
+                                                    </div>
+                                                </div>
+                                                <div class="row ms-1">
+                                                    Total is:
+                                                    <%=order.total%>LL
+                                                </div>
+                                                <hr>
+                                                <%}%>
+                                                    <%  })%>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+
+    <%- include("partials/footer") -%>
